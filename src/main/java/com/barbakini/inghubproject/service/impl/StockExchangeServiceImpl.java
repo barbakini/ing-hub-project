@@ -69,12 +69,12 @@ public class StockExchangeServiceImpl implements StockExchangeService {
                     .stockId(tuple.getT2().getId()).build();
             return exchangeStocksRepository.save(exchangeStocks)
                     .then(stockExchangeRepository.updateLiveInStatus(name));
-        }).onErrorResume(DataIntegrityViolationException.class, (e) -> {
-            log.info("error: ", e);
-            return Mono.error(new EntityNotFoundException(stockName, EntityTypeEnum.STOCK));
         }).onErrorResume(DuplicateKeyException.class, (e) -> {
             log.info("error: ", e);
             return Mono.empty();
+        }).onErrorResume(DataIntegrityViolationException.class, (e) -> {
+            log.info("error: ", e);
+            return Mono.error(new EntityNotFoundException(stockName, EntityTypeEnum.STOCK));
         });
     }
 

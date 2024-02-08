@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,9 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<?> genericHandler(Exception e) {
+        if (e instanceof NoResourceFoundException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Response<Object> response = Response.builder()
                 .success(false)
                 .msg("Some error occurred during processing your request. System admins were notified.")

@@ -20,7 +20,7 @@ public class StockController {
 
     private final StockService stockService;
 
-    @PostMapping()
+    @PostMapping
     public Mono<Response<Stock>> createStock(@Valid @RequestBody StockCreateRequest request) {
         return stockService.createStock(request)
                 .flatMap(stock -> Mono.just(Response.<Stock>builder()
@@ -28,12 +28,12 @@ public class StockController {
                         .data(stock).build()));
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public Mono<Response<Object>> deleteStock(@RequestParam String name) {
         return stockService.deleteStock(name).thenReturn(Response.builder().success(true).build());
     }
 
-    @PatchMapping()
+    @PatchMapping
     public Mono<Response<Object>> updateStock(@Valid @RequestBody StockUpdateRequest request) {
         return stockService.updateStock(request).thenReturn(Response.builder().success(true).build());
     }

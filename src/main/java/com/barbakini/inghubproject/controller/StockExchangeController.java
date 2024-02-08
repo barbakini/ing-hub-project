@@ -22,7 +22,7 @@ public class StockExchangeController {
 
     private final StockExchangeService stockExchangeService;
 
-    @PostMapping()
+    @PostMapping
     public Mono<Response<ExchangeDTO>> createStockExchange(@Valid @RequestBody StockExchangeCreateRequest request) {
         return stockExchangeService.createStockExchange(request)
                 .flatMap(exchange -> Mono.just(Response.<ExchangeDTO>builder()
