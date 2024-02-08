@@ -6,6 +6,7 @@ import com.barbakini.inghubproject.dto.StockUpdateRequest;
 import com.barbakini.inghubproject.jpa.model.Stock;
 import com.barbakini.inghubproject.jpa.repository.StockExchangeRepository;
 import com.barbakini.inghubproject.jpa.repository.StockRepository;
+import com.barbakini.inghubproject.service.StockService;
 import com.barbakini.inghubproject.util.exceptions.EntityAlreadyExistException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class StockExchangeServiceImplTest {
+public class StockServiceTest {
 
     @Mock
     private StockRepository stockRepository;
@@ -32,7 +33,7 @@ public class StockExchangeServiceImplTest {
     private StockExchangeRepository stockExchangeRepository;
 
     @InjectMocks
-    private StockServiceImpl stockService;
+    private StockService stockService;
 
 
     @Test
@@ -45,9 +46,7 @@ public class StockExchangeServiceImplTest {
         request.setName("name");
         request.setDescription("description");
         request.setCurrentPrice(BigDecimal.TEN);
-        StepVerifier.create(stockService.createStock(request)).assertNext(savedStock -> {
-            assertEquals(savedStock, stock);
-        }).verifyComplete();
+        StepVerifier.create(stockService.createStock(request)).assertNext(savedStock -> assertEquals(savedStock, stock)).verifyComplete();
 
         verify(stockRepository, times(1)).save(any());
     }
@@ -89,14 +88,12 @@ public class StockExchangeServiceImplTest {
     }
 
     @Test
-    void deleteStock_ShouldReturnStock() {
+    void getStock_ShouldReturnStock() {
         Stock stock = Stock.builder().id(1l).name("testStock").description("test stock")
                 .currentPrice(BigDecimal.TEN).lastUpdate(LocalDateTime.now()).build();
         when(stockRepository.findByName(anyString())).thenReturn(Mono.just(stock));
 
-        StepVerifier.create(stockService.getStock("get")).assertNext(stock1 -> {
-            assertEquals(stock1, stock);
-        }).verifyComplete();
+        StepVerifier.create(stockService.getStock("get")).assertNext(stock1 -> assertEquals(stock1, stock)).verifyComplete();
 
         verify(stockRepository, times(1)).findByName(anyString());
     }
